@@ -11,7 +11,7 @@ export default function AboutPage() {
             <Logo className="h-20 w-auto text-primary mb-4" />
             <h1 className="text-3xl font-bold text-primary">{t.aboutTitle}</h1>
             <p className="mt-4 max-w-2xl text-muted-foreground">
-                Tawjihi AI Pro is a modern, bilingual web app designed as a personalized study assistant for high-school (Tawjihi) students. Upload your textbooks, ask questions, and get intelligent answers powered by generative AI.
+                Tawjihi AI is a modern, bilingual web app designed as a personalized study assistant for high-school (Tawjihi) students. Upload your textbooks, ask questions, and get intelligent answers powered by generative AI.
             </p>
             <div className="mt-8">
                 <p className="text-sm text-foreground">{t.aboutCredits}</p>

@@ -29,11 +29,11 @@ export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isLoggedIn } = useAuth();
-  
+
   const redirectUrl = searchParams.get('redirect') || '/chat';
 
   useEffect(() => {
-    if(isLoggedIn) {
+    if (isLoggedIn) {
       router.replace(redirectUrl);
     }
   }, [isLoggedIn, router, redirectUrl]);
@@ -48,7 +48,7 @@ export function LoginForm() {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
-      toast({ title: "Logged in successfully!"});
+      toast({ title: "Logged in successfully!" });
       // Redirect is handled by useEffect
     } catch (error: any) {
       let description;
@@ -71,7 +71,7 @@ export function LoginForm() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      toast({ title: "Logged in successfully!"});
+      toast({ title: "Logged in successfully!" });
       // Redirect is handled by useEffect
     } catch (error: any) {
       toast({ variant: 'destructive', title: t.loginFailed, description: error.message });
@@ -102,13 +102,13 @@ export function LoginForm() {
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center justify-between">
-                    <FormLabel>{t.password}</FormLabel>
-                    <Link
-                        href="/reset-password"
-                        className="text-sm font-medium text-primary hover:underline"
-                    >
-                        Forgot password?
-                    </Link>
+                  <FormLabel>{t.password}</FormLabel>
+                  <Link
+                    href="/reset-password"
+                    className="text-sm font-medium text-primary hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
                 <FormControl>
                   <Input type="password" {...field} />
@@ -128,7 +128,7 @@ export function LoginForm() {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+          <span className="px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
       <Button variant="outline" onClick={handleGoogleSignIn} disabled={loading} className="w-full glowing-btn">

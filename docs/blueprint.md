@@ -1,4 +1,4 @@
-# **App Name**: Tawjihi AI Pro
+# **App Name**: Tawjihi AI
 
 ## Core Features:
 

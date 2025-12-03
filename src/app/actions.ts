@@ -1,131 +1,88 @@
 'use server';
 
 import { answerStudyQuestion, AnswerStudyQuestionInput } from '@/ai/flows/answer-study-questions';
-import { collection, getDocs, query, where, doc, setDoc, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { Message } from '@/components/chat/chat-interface';
 
-// ===== تحويل التاريخ =====
-function convertHistoryToAiFormat(history: Message[]) {
-  return history.map(msg => ({
-    role: msg.role === 'user' ? 'user' : 'model',
-    content: msg.content,
-  }));
-}
-
-// ===== إنشاء محادثة جديدة =====
-async function createChat(userId: string, firstMessage: string) {
-  const newChatRef = doc(collection(db, 'chats'));
-
-  await setDoc(newChatRef, {
-    userId,
-    title: firstMessage.substring(0, 40),
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
-
-  return newChatRef.id;
-}
-
-// ===== حفظ رسالة في المحادثة =====
-async function saveMessage(chatId: string, role: string, content: string) {
-  const messagesRef = collection(db, `chats/${chatId}/messages`);
-  await addDoc(messagesRef, {
-    role,
-    content,
-    createdAt: serverTimestamp(),
-  });
-
-  // تحديث الشات
-  const chatRef = doc(db, 'chats', chatId);
-  await setDoc(
-    chatRef,
-    {
-      updatedAt: serverTimestamp(),
-      title: content.substring(0, 40),
-    },
-    { merge: true }
-  );
-}
+// 🆕 توحيد اسم الحقل هنا ليعكس ما يرسله chat-interface.tsx
+type HistoryItem = {
+  role: 'user' | 'assistant';
+  content: string;
+  imageBase64?: string | null; // ✔ توحيد الاسم لـ imageBase64
+};
 
 // ==================================================================
-//                     الدالة الرئيسية askQuestionAction
+//                     الدالة الرئيسية askQuestionAction
 // ==================================================================
 export async function askQuestionAction(args: {
   question: string;
   expandSearchOnline: boolean;
   language: 'en' | 'ar';
   userId?: string;
-  imageDataUri?: string | null;
-  history: Message[];
-  chatId?: string | null;       // ⭐ تمت إضافتها لنستمر بنفس المحادثة
+  imageBase64?: string | null; // ✔ توحيد الاسم للصورة الحالية
+  history: HistoryItem[]; // ✔ يستقبل التاريخ بالصيغة الجديدة
+  chatId?: string | null;
+  availableBooks?: { id: string; fileName: string }[];
+  textbookContent?: string;
+
+
 }) {
-  const { question, expandSearchOnline, language, userId, imageDataUri, history, chatId } = args;
 
-  // ---------------------- تجهيز الكتب ----------------------
-  let textbookContent =
-    "No textbook content available for anonymous users. Please log in to use your uploaded books.";
-  let availableBooks: { id: string; fileName: string }[] = [];
+  const {
+    question,
+    expandSearchOnline,
+    language,
+    imageBase64,
+    history,
+    chatId,
+    availableBooks = [],
+    textbookContent = '',
+  } = args;
+  console.log("📷 RECEIVED IMAGE:", imageBase64?.substring(0, 50));
 
-  if (userId) {
-    const booksQuery = query(
-      collection(db, 'books'),
-      where('userId', '==', userId),
-      where('status', '==', 'analyzed')
-    );
+  // Debug logging
 
-    const querySnapshot = await getDocs(booksQuery);
+  console.log("askQuestionAction called with:", {
+    question,
+    hasImage: !!imageBase64,
+    historyLength: history?.length || 0,
+    imageLength: imageBase64?.length || 0,
+  });
 
-    if (!querySnapshot.empty) {
-      availableBooks = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        fileName: doc.data().fileName,
-      }));
+  // ⚠️ تحويل historyItem إلى z.infer<typeof HistoryMessageSchema>[]
+  // يجب أن يتم هذا التحويل هنا قبل تمريره إلى Flow
+  const historyForAI = history.map(h => ({
+    role: h.role,
+    content: h.content,
+    imageBase64: h.imageBase64,
+  }));
 
-      const bookTitles = availableBooks.map(b => b.fileName).join(', ');
-      textbookContent = `Content available from: ${bookTitles}. Use it as your primary source.`;
-    }
-  }
-
-  // ---------------------- تجهيز الإدخال لـ Gemini ----------------------
   const input: AnswerStudyQuestionInput = {
     question,
     textbookContent,
     availableBooks,
     expandSearchOnline,
     language,
-    history: convertHistoryToAiFormat(history), // ⭐ نرسل كل الهستوري
-    ...(imageDataUri && { imageDataUri }),
+    // ⚠️ تجاوز مؤقت للنوع لتجنب خطأ TypeScript
+    history: historyForAI as any,
+    imageBase64: imageBase64 || undefined,
   };
 
   try {
-    // ============= الحصول على الإجابة =============
     const output = await answerStudyQuestion(input);
-
-    let finalChatId = chatId;
-
-    // ============= لو مافي chatId → أنشئ واحد =============
-    if (userId) {
-      if (!chatId) {
-        finalChatId = await createChat(userId, question);
-      }
-
-      // ============= حفظ الرسائل =============
-      await saveMessage(finalChatId!, 'user', question);
-      await saveMessage(finalChatId!, 'assistant', output.answer);
-    }
 
     return {
       answer: output.answer,
       source: output.source,
       sourceBookName: output.sourceBookName,
-      chatId: finalChatId ?? null,
+      lang: output.lang,
+      chatId: chatId ?? null,
     };
-  } catch (error: any) {
+
+  } catch (error) {
     console.error('Error in Genkit flow:', error);
     return {
-      answer: `An error occurred while processing the question: ${error.message}`,
-      source: 'error',
+      answer: "حدث خطأ أثناء معالجة سؤالك. حاول لاحقًا.",
+      source: "error",
       chatId,
     };
   }

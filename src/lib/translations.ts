@@ -1,8 +1,10 @@
 export const translations = {
   en: {
     // General
-    appName: 'Tawjihi AI Pro',
+    appName: 'Tawjihi AI',
     loading: 'Loading...',
+    cancel: 'Cancel',
+    save: 'Save',
     // Auth
     login: 'Login',
     loginFailed: 'Login Failed',
@@ -34,6 +36,17 @@ export const translations = {
     // Chat
     chatPlaceholder: 'Ask a question about your books...',
     expandSearch: 'Expand Search Online',
+    renameChat: 'Rename chat',
+    renameChatDescription: 'Give this conversation a short, descriptive title.',
+    chatName: 'Chat name',
+    deleteChat: 'Delete chat',
+    deleteChatConfirm: 'Delete this chat?',
+    assistantTyping: 'AI tutor is thinking...',
+    searchChats: 'Search chats',
+    recentChats: 'Recent chats',
+    noChatsFound: 'No chats match your search.',
+    noChatsYet: 'Your recent chats will appear here.',
+    newChat: 'New chat',
     // My Books
     myBooksDescription: "Here you can upload new textbooks and manage your existing ones.",
     noBooks: "You haven't uploaded any books yet. Upload one to get started!",
@@ -46,13 +59,15 @@ export const translations = {
     english: 'English',
     arabic: 'Arabic',
     // About
-    aboutTitle: 'About Tawjihi AI Pro',
+    aboutTitle: 'About Tawjihi AI',
     aboutCredits: 'Developed by Yazan Al-Astal © 2025',
   },
   ar: {
     // General
-    appName: 'توجيهي برو AI',
+    appName: 'توجيهي AI',
     loading: 'جاري التحميل...',
+    cancel: 'إلغاء',
+    save: 'حفظ',
     // Auth
     login: 'تسجيل الدخول',
     loginFailed: 'فشل تسجيل الدخول',
@@ -84,6 +99,17 @@ export const translations = {
     // Chat
     chatPlaceholder: 'اسأل سؤالاً عن كتبك...',
     expandSearch: 'توسيع البحث عبر الإنترنت',
+    renameChat: 'إعادة تسمية المحادثة',
+    renameChatDescription: 'أدخل عنواناً قصيراً ووصفياً لهذه المحادثة.',
+    chatName: 'اسم المحادثة',
+    deleteChat: 'حذف المحادثة',
+    deleteChatConfirm: 'هل تريد حذف هذه المحادثة؟',
+    assistantTyping: 'المساعد الذكي يفكر...',
+    searchChats: 'ابحث في المحادثات',
+    recentChats: 'المحادثات الحديثة',
+    noChatsFound: 'لا توجد محادثات تطابق بحثك.',
+    noChatsYet: 'ستظهر محادثاتك الأخيرة هنا.',
+    newChat: 'محادثة جديدة',
     // My Books
     myBooksDescription: "هنا يمكنك رفع كتب مدرسية جديدة وإدارة كتبك الحالية.",
     noBooks: 'لم تقم برفع أي كتب بعد. ارفع كتاباً للبدء!',
@@ -96,7 +122,7 @@ export const translations = {
     english: 'الإنجليزية',
     arabic: 'العربية',
     // About
-    aboutTitle: 'حول توجيهي برو AI',
+    aboutTitle: 'حول توجيهي AI',
     aboutCredits: 'تطوير يزن الأسطل © 2025',
   },
 };

@@ -4,13 +4,16 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* Light background */
-    --foreground: 240 10% 3.9%; /* Dark text */
+    --background: 0 0% 100%;
+    /* Light background */
+    --foreground: 240 10% 3.9%;
+    /* Dark text */
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 120 61% 40%; /* Vibrant Green (#32cd32) for light mode - darkened for contrast */
+    --primary: 120 61% 40%;
+    /* Vibrant Green (#32cd32) for light mode - darkened for contrast */
     --primary-foreground: 355.7 100% 97.3%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -24,7 +27,7 @@
     --input: 240 5.9% 90%;
     --ring: 120 61% 40%;
     --radius: 0.5rem;
-    
+
     --sidebar-background: 240 4.8% 95.9%;
     --sidebar-foreground: 240 5.9% 10%;
     --sidebar-primary: 120 61% 40%;
@@ -33,16 +36,20 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 240 5.9% 85%;
     --sidebar-ring: 120 61% 40%;
+
+    --sidebar-offset: 0px;
   }
 
   .dark {
-    --background: 0 0% 8%; /* Darker Grey */
+    --background: 0 0% 8%;
+    /* Darker Grey */
     --foreground: 210 20% 98%;
     --card: 0 0% 12%;
     --card-foreground: 210 20% 98%;
     --popover: 0 0% 12%;
     --popover-foreground: 210 20% 98%;
-    --primary: 120 61% 50%; /* Vibrant Green (#32cd32) */
+    --primary: 120 61% 50%;
+    /* Vibrant Green (#32cd32) */
     --primary-foreground: 120 61% 10%;
     --secondary: 0 0% 16%;
     --secondary-foreground: 210 20% 98%;
@@ -55,7 +62,7 @@
     --border: 0 0% 20%;
     --input: 0 0% 16%;
     --ring: 120 61% 50%;
-    
+
     --sidebar-background: 0 0% 12%;
     --sidebar-foreground: 210 20% 98%;
     --sidebar-primary: 120 61% 50%;
@@ -71,41 +78,83 @@
   * {
     @apply border-border;
   }
-  html, body, #__next {
+
+  html,
+  body,
+  #__next {
     height: 100%;
     overscroll-behavior-y: none;
   }
+
+  /* Larger base type for improved readability */
+  html {
+    font-size: 18px;
+    /* 18px base */
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-cairo), "Cairo", var(--font-inter), "Inter", sans-serif;
+    font-size: 1rem;
+    /* 18px */
+    line-height: 1.6;
     touch-action: none;
-  }
-  
-  html[lang="ar"] body {
-    @apply font-arabic;
   }
 }
 
 @layer components {
   .glass-card {
-      @apply bg-secondary/20 backdrop-blur-lg border border-border;
+    @apply bg-secondary/20 backdrop-blur-lg border border-border;
   }
+
   .glowing-btn {
     @apply hover:shadow-glow focus-visible:shadow-glow transition-shadow;
   }
 }
 
 @layer utilities {
-    .animated-grid-background {
-        background-color: hsl(var(--background));
-        background-image:
-            linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
-            linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
-        background-size: 4rem 4rem;
-        animation: 20s linear 0s infinite normal none running move;
+  .animated-grid-background {
+    background-color: hsl(var(--background));
+    background-image:
+      linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 4rem 4rem;
+    animation: 20s linear 0s infinite normal none running move;
+  }
+
+  @keyframes move {
+    from {
+      background-position: 0px 0px;
     }
 
-    @keyframes move {
-        from { background-position: 0px 0px; }
-        to { background-position: -128px 0px; }
+    to {
+      background-position: -128px 0px;
     }
+  }
+}
+
+.auto-expand {
+  height: auto;
+  min-height: 40px;
+}
+
+.auto-expand::-webkit-scrollbar {
+  display: none;
+}
+
+.auto-expand {
+  overflow-y: hidden;
+}
+
+.auto-expand:focus {
+  overflow-y: auto;
+}
+
+textarea.auto-expand:focus {
+  overflow-y: auto;
+}
+
+textarea.auto-expand::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }

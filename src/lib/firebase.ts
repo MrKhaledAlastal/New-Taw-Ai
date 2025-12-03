@@ -2,7 +2,7 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import { connectStorageEmulator, getStorage } from 'firebase/storage';
 
 // if (process.env.NODE_ENV === "development") {
 //   process.env.FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080";
@@ -28,6 +28,12 @@ export const storage = getStorage(app);
 // if (process.env.NODE_ENV === "development") {
 //   connectFirestoreEmulator(db, "127.0.0.1", 8080);
 //   connectAuthEmulator(auth, "http://127.0.0.1:9099");
+//   connectStorageEmulator(storage, "127.0.0.1", 9199);
 // }
 
+if (process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === 'true') {
+  connectStorageEmulator(storage, '127.0.0.1', 9199);
+}
+
 export default app;
+
